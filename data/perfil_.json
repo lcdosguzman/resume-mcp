@@ -1,0 +1,75 @@
+{
+
+  "datos_personales": {
+    "nombre_completo": "Nombre Apellido",
+    "titulo_profesional": "Desarrollador de Software",
+    "ciudad": "Buenos Aires, Argentina",
+    "email": "tu.email@ejemplo.com",
+    "telefono": "+54 9 11 0000-0000",
+    "linkedin": "https://www.linkedin.com/in/tu-usuario",
+    "github": "https://github.com/tu-usuario",
+    "portfolio": ""
+  },
+
+  "resumen_profesional": "Resumen breve (3-4 líneas) de tu perfil profesional: años de experiencia, principales tecnologías/áreas, y qué tipo de rol buscás.",
+
+  "experiencia": [
+    {
+      "puesto": "Título del puesto",
+      "empresa": "Nombre de la empresa",
+      "ubicacion": "Buenos Aires, Argentina (o Remoto)",
+      "fecha_inicio": "2023-01",
+      "fecha_fin": "presente",
+      "descripcion": "Descripción general del rol y responsabilidades principales.",
+      "logros": [
+        "Logro concreto y medible #1 (ej: 'Reduje el tiempo de build en 40% migrando el pipeline de CI')",
+        "Logro concreto y medible #2"
+      ],
+      "tecnologias": ["Go", "Python", "Docker"]
+    }
+  ],
+
+  "educacion": [
+    {
+      "titulo": "Nombre del título/carrera",
+      "institucion": "Nombre de la institución",
+      "ubicacion": "Buenos Aires, Argentina",
+      "fecha_inicio": "2015",
+      "fecha_fin": "2020",
+      "estado": "completo"
+    }
+  ],
+
+  "certificaciones": [
+    {
+      "nombre": "Nombre de la certificación/curso",
+      "institucion": "Institución emisora",
+      "fecha": "2026-01",
+      "url": ""
+    }
+  ],
+
+  "habilidades_tecnicas": {
+    "lenguajes": ["Go", "Python", "JavaScript"],
+    "frameworks_librerias": [],
+    "herramientas": ["Git", "Docker"],
+    "bases_de_datos": [],
+    "otras": ["MCP (Model Context Protocol)", "Integración de APIs de LLMs"]
+  },
+
+  "habilidades_blandas": ["Comunicación", "Trabajo en equipo", "Resolución de problemas"],
+
+  "idiomas": [
+    {"idioma": "Español", "nivel": "nativo"},
+    {"idioma": "Inglés", "nivel": "intermedio/avanzado"}
+  ],
+
+  "proyectos_personales": [
+    {
+      "nombre": "Nombre del proyecto",
+      "descripcion": "Qué hace y qué problema resuelve.",
+      "tecnologias": ["Go"],
+      "url": ""
+    }
+  ]
+}

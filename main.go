@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -15,10 +16,10 @@ import (
 )
 
 const (
-	defaultPort      = "8090"
-	perfilPath       = "perfil.json"
-	formatoCVPath    = "data/formato_cv.json"
-	outputDir        = "output"
+	defaultPort   = "8090"
+	perfilPath    = "perfil.json"
+	formatoCVPath = "data/formato_cv.json"
+	outputDir     = "output"
 )
 
 func main() {
@@ -26,12 +27,18 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
+	publicURL := os.Getenv("MCP_PUBLIC_URL")
+	if publicURL == "" {
+		publicURL = "http://127.0.0.1:" + port
+	}
+	downloadBaseURL = strings.TrimRight(publicURL, "/") + "/downloads/"
 
 	srv := mcpserver.NewServer("resume-mcp", "0.1.0")
 	registerTools(srv)
 
 	mux := http.NewServeMux()
 	mux.Handle("/mcp", srv.Handler())
+	mux.Handle("/downloads/", http.StripPrefix("/downloads/", http.FileServer(http.Dir(outputDir))))
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("ok"))
 	})
@@ -74,8 +81,8 @@ func registerTools(srv *mcpserver.Server) {
 		InputSchema: mcpserver.InputSchema{
 			Type: "object",
 			Properties: map[string]mcpserver.Property{
-				"contenido":       {Type: "string", Description: "Contenido completo del currículum en formato Markdown."},
-				"nombre_archivo":  {Type: "string", Description: "Nombre de archivo opcional (sin extensión). Si no se indica, se genera uno con fecha/hora."},
+				"contenido":      {Type: "string", Description: "Contenido completo del currículum en formato Markdown."},
+				"nombre_archivo": {Type: "string", Description: "Nombre de archivo opcional (sin extensión). Si no se indica, se genera uno con fecha/hora."},
 			},
 			Required: []string{"contenido"},
 		},
@@ -155,6 +162,7 @@ type guardarArgs struct {
 }
 
 var nombreArchivoSeguro = regexp.MustCompile(`[^a-zA-Z0-9_-]+`)
+var downloadBaseURL string
 
 func toolGuardarCV(raw json.RawMessage) (mcpserver.CallToolResult, error) {
 	var args guardarArgs
@@ -169,12 +177,17 @@ func toolGuardarCV(raw json.RawMessage) (mcpserver.CallToolResult, error) {
 		return errResult(fmt.Errorf("no se pudo crear carpeta de salida: %w", err))
 	}
 
-	nombre := args.NombreArchivo
-	if strings.TrimSpace(nombre) == "" {
-		nombre = "cv_" + time.Now().Format("20060102_150405")
+	nombre := strings.TrimSpace(args.NombreArchivo)
+	if nombre == "" {
+		nombre = "cv"
 	} else {
 		nombre = nombreArchivoSeguro.ReplaceAllString(nombre, "_")
 	}
+	nombre = strings.Trim(nombre, "_")
+	if nombre == "" {
+		nombre = "cv"
+	}
+	nombre += "_" + time.Now().Format("20060102_150405")
 
 	path := filepath.Join(outputDir, nombre+".md")
 	if err := os.WriteFile(path, []byte(args.Contenido), 0o644); err != nil {
@@ -182,7 +195,8 @@ func toolGuardarCV(raw json.RawMessage) (mcpserver.CallToolResult, error) {
 	}
 
 	abs, _ := filepath.Abs(path)
-	return textResult(fmt.Sprintf("Currículum guardado en: %s", abs)), nil
+	downloadURL := downloadBaseURL + url.PathEscape(filepath.Base(path))
+	return textResult(fmt.Sprintf("Currículum guardado en: %s\nDescarga: %s", abs, downloadURL)), nil
 }
 
 // ---------- Helpers ----------
