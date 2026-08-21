@@ -104,6 +104,12 @@ curl -s -X POST http://127.0.0.1:8090/mcp \
 | `prepare_job_context` | `{ "job_description": "..." }` | Returns the profile, format, job description, and instructions for writing a tailored resume. |
 | `save_resume` | `{ "content": "...markdown...", "file_name": "optional" }` | Saves the Markdown resume in `output/` and returns a download URL. |
 
+**Client compatibility:** MCP clients must use the English tool names and
+argument names listed above. The current public contract is
+`get_profile`, `get_resume_format`, `prepare_job_context`, and `save_resume`,
+with `job_description`, `content`, and `file_name` as applicable. Clients
+configured with the previous Spanish names must be updated before use.
+
 Typical LLM workflow:
 
 1. Call `prepare_job_context` with the complete job description.
