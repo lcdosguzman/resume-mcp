@@ -6,24 +6,24 @@ import (
 	"net/http"
 )
 
-// ToolHandler es la función que implementa la lógica de una tool.
-// Recibe los argumentos crudos (JSON) y devuelve el resultado o un error.
+// ToolHandler implements a tool's logic.
+// It receives raw JSON arguments and returns the result or an error.
 type ToolHandler func(args json.RawMessage) (CallToolResult, error)
 
-// registeredTool agrupa la definición de una tool con su handler.
+// registeredTool groups a tool definition with its handler.
 type registeredTool struct {
 	def     Tool
 	handler ToolHandler
 }
 
-// Server es el servidor MCP HTTP (Streamable HTTP, modo simple sin SSE).
+// Server is the MCP HTTP server (simple Streamable HTTP mode without SSE).
 type Server struct {
 	name    string
 	version string
 	tools   map[string]registeredTool
 }
 
-// NewServer crea un servidor MCP nuevo.
+// NewServer creates a new MCP server.
 func NewServer(name, version string) *Server {
 	return &Server{
 		name:    name,
@@ -32,23 +32,23 @@ func NewServer(name, version string) *Server {
 	}
 }
 
-// RegisterTool agrega una tool al servidor.
+// RegisterTool adds a tool to the server.
 func (s *Server) RegisterTool(def Tool, handler ToolHandler) {
 	s.tools[def.Name] = registeredTool{def: def, handler: handler}
 }
 
-// Handler devuelve el http.Handler a montar en el mux (endpoint /mcp).
+// Handler returns the http.Handler to mount on the mux (the /mcp endpoint).
 func (s *Server) Handler() http.Handler {
 	return http.HandlerFunc(s.serveHTTP)
 }
 
 func (s *Server) serveHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		// El transporte "Streamable HTTP" completo soporta GET para streams
-		// server-initiated (SSE). Esta implementación simple solo necesita
-		// request/response, así que devolvemos 405 para otros métodos.
+		// Full "Streamable HTTP" transport supports GET for server-initiated
+		// streams (SSE). This simple implementation only needs request/response,
+		// so it returns 405 for other methods.
 		w.Header().Set("Allow", "POST")
-		http.Error(w, "método no soportado, usar POST", http.StatusMethodNotAllowed)
+		http.Error(w, "method not supported, use POST", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -56,14 +56,14 @@ func (s *Server) serveHTTP(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeJSON(w, Response{
 			JSONRPC: "2.0",
-			Error:   &RPCError{Code: CodeParseError, Message: "JSON inválido: " + err.Error()},
+			Error:   &RPCError{Code: CodeParseError, Message: "invalid JSON: " + err.Error()},
 		})
 		return
 	}
 
 	resp := s.dispatch(req)
 
-	// Las notificaciones (sin "id") no llevan respuesta en JSON-RPC.
+	// Notifications (without an "id") do not receive a JSON-RPC response.
 	if req.ID == nil {
 		w.WriteHeader(http.StatusAccepted)
 		return
@@ -86,7 +86,7 @@ func (s *Server) dispatch(req Request) Response {
 		}
 
 	case "notifications/initialized", "notifications/cancelled":
-		// Notificaciones del cliente; no requieren respuesta con contenido.
+		// Client notifications; they do not require a content response.
 		return base
 
 	case "tools/list":
@@ -99,12 +99,12 @@ func (s *Server) dispatch(req Request) Response {
 	case "tools/call":
 		var params CallToolParams
 		if err := json.Unmarshal(req.Params, &params); err != nil {
-			base.Error = &RPCError{Code: CodeInvalidParams, Message: "parámetros inválidos: " + err.Error()}
+			base.Error = &RPCError{Code: CodeInvalidParams, Message: "invalid parameters: " + err.Error()}
 			return base
 		}
 		tool, ok := s.tools[params.Name]
 		if !ok {
-			base.Error = &RPCError{Code: CodeMethodNotFound, Message: "tool desconocida: " + params.Name}
+			base.Error = &RPCError{Code: CodeMethodNotFound, Message: "unknown tool: " + params.Name}
 			return base
 		}
 		result, err := tool.handler(params.Arguments)
@@ -118,7 +118,7 @@ func (s *Server) dispatch(req Request) Response {
 		base.Result = result
 
 	default:
-		base.Error = &RPCError{Code: CodeMethodNotFound, Message: "método desconocido: " + req.Method}
+		base.Error = &RPCError{Code: CodeMethodNotFound, Message: "unknown method: " + req.Method}
 	}
 
 	return base
@@ -127,6 +127,6 @@ func (s *Server) dispatch(req Request) Response {
 func writeJSON(w http.ResponseWriter, v interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(v); err != nil {
-		log.Printf("error escribiendo respuesta JSON: %v", err)
+		log.Printf("error writing JSON response: %v", err)
 	}
 }

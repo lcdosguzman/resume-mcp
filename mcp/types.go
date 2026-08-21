@@ -4,7 +4,7 @@ import "encoding/json"
 
 // ---------- JSON-RPC 2.0 ----------
 
-// Request representa un mensaje JSON-RPC 2.0 entrante.
+// Request represents an incoming JSON-RPC 2.0 message.
 type Request struct {
 	JSONRPC string          `json:"jsonrpc"`
 	ID      json.RawMessage `json:"id,omitempty"`
@@ -12,7 +12,7 @@ type Request struct {
 	Params  json.RawMessage `json:"params,omitempty"`
 }
 
-// Response representa un mensaje JSON-RPC 2.0 saliente.
+// Response represents an outgoing JSON-RPC 2.0 message.
 type Response struct {
 	JSONRPC string          `json:"jsonrpc"`
 	ID      json.RawMessage `json:"id,omitempty"`
@@ -20,14 +20,14 @@ type Response struct {
 	Error   *RPCError       `json:"error,omitempty"`
 }
 
-// RPCError representa un error JSON-RPC 2.0.
+// RPCError represents a JSON-RPC 2.0 error.
 type RPCError struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data,omitempty"`
 }
 
-// Códigos de error estándar JSON-RPC.
+// Standard JSON-RPC error codes.
 const (
 	CodeParseError     = -32700
 	CodeInvalidRequest = -32600
@@ -38,24 +38,24 @@ const (
 
 // ---------- MCP: initialize ----------
 
-// InitializeResult es la respuesta al método "initialize".
+// InitializeResult is the response to the "initialize" method.
 type InitializeResult struct {
 	ProtocolVersion string       `json:"protocolVersion"`
 	Capabilities    Capabilities `json:"capabilities"`
 	ServerInfo      ServerInfo   `json:"serverInfo"`
 }
 
-// Capabilities describe qué funcionalidades soporta el servidor.
+// Capabilities describes the features supported by the server.
 type Capabilities struct {
 	Tools *ToolsCapability `json:"tools,omitempty"`
 }
 
-// ToolsCapability indica soporte de tools (y si notifica cambios en la lista).
+// ToolsCapability indicates tool support and whether list changes are notified.
 type ToolsCapability struct {
 	ListChanged bool `json:"listChanged"`
 }
 
-// ServerInfo identifica al servidor MCP.
+// ServerInfo identifies the MCP server.
 type ServerInfo struct {
 	Name    string `json:"name"`
 	Version string `json:"version"`
@@ -63,46 +63,46 @@ type ServerInfo struct {
 
 // ---------- MCP: tools/list ----------
 
-// Tool describe una herramienta expuesta por el servidor.
+// Tool describes a tool exposed by the server.
 type Tool struct {
 	Name        string      `json:"name"`
 	Description string      `json:"description"`
 	InputSchema InputSchema `json:"inputSchema"`
 }
 
-// InputSchema es un JSON Schema simplificado para los argumentos de una tool.
+// InputSchema is a simplified JSON Schema for a tool's arguments.
 type InputSchema struct {
 	Type       string              `json:"type"`
 	Properties map[string]Property `json:"properties,omitempty"`
 	Required   []string            `json:"required,omitempty"`
 }
 
-// Property describe un campo dentro del InputSchema.
+// Property describes a field within the InputSchema.
 type Property struct {
 	Type        string `json:"type"`
 	Description string `json:"description"`
 }
 
-// ListToolsResult es la respuesta al método "tools/list".
+// ListToolsResult is the response to the "tools/list" method.
 type ListToolsResult struct {
 	Tools []Tool `json:"tools"`
 }
 
 // ---------- MCP: tools/call ----------
 
-// CallToolParams son los parámetros del método "tools/call".
+// CallToolParams are the parameters for the "tools/call" method.
 type CallToolParams struct {
 	Name      string          `json:"name"`
 	Arguments json.RawMessage `json:"arguments"`
 }
 
-// ContentBlock es un bloque de contenido devuelto por una tool (texto por ahora).
+// ContentBlock is a content block returned by a tool (text for now).
 type ContentBlock struct {
 	Type string `json:"type"`
 	Text string `json:"text"`
 }
 
-// CallToolResult es la respuesta al método "tools/call".
+// CallToolResult is the response to the "tools/call" method.
 type CallToolResult struct {
 	Content []ContentBlock `json:"content"`
 	IsError bool           `json:"isError,omitempty"`
