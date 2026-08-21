@@ -49,9 +49,9 @@
 
   "general_rules": [
     "Do not invent experience, degrees, companies, or dates that are not present in data/profile.json.",
-    "Prioritize content according to job relevance, but do not fabricate new information.",
+    "Prioritize content according to job relevance. If space remains within the one-page limit, include additional truthful and useful information from the profile, without fabricating new information.",
     "Use a professional, direct tone without empty adjectives.",
-    "Target length: one printed page (approximately 400-600 words).",
+    "Target length: one printed page. Keep all sections except 'job_fit_evaluation' between approximately 400 and 600 words; the 'job_fit_evaluation' section does not count toward this word limit.",
     "Use bullets and bold text for titles and positions.",
     "Optimize vocabulary for ATS systems by using industry keywords when they genuinely apply to the profile.",
     "Detect the predominant language of the profile's narrative content and write the entire resume in that language. Count prose fields such as the summary, descriptions, achievements, education, certifications, and soft skills; do not base the decision only on names, company names, technologies, or URLs. If Spanish content predominates, write the resume in Spanish. If English content predominates, write it in English. Translate section headings and fit-evaluation labels to the selected language.",
