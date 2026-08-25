@@ -1,0 +1,210 @@
+{
+  "_note": "Completá cada campo con tus datos reales. Borrá este campo '_note' cuando termines. No dejes campos de ejemplo sin editar: el MCP va a usar este JSON tal cual para generar currículums.",
+
+  "personal_details": {
+    "full_name": "Simón Bernabé Guzmán Marval",
+    "professional_title": "Software Engineer | Desarrollo de Microservicios, Go (Golang), Java | Agentes de IA",
+    "city": "Buenos Aires, Argentina",
+    "email": "simonbguzmanm@gmail.com",
+    "phone": "+54 9 11 7629 6284",
+    "linkedin": "https://www.linkedin.com/in/simonbguzmann",
+    "github": "https://github.com/lcdosguzman",
+    "portfolio": "https://lcdosguzman.github.io/websimonguzman/"
+  },
+
+  "professional_summary": "Soy Desarrollo del Backend especializado en arquitectura de microservicios, con más de 15 años de experiencia en el diseño, desarrollo y mantenimiento de aplicaciones web y sistemas empresariales escalables. Mi enfoque combina sólidos fundamentos en ingeniería de software, dominio de lenguajes como Go (Golang), Java, Node.js, PHP, python, entre otros; y una visión integral del ciclo de vida del producto, desde la planificación hasta la puesta en producción. Busco seguir creciendo como Software Engineer Backend, contribuyendo a proyectos de alto impacto y trabajando en entornos donde la excelencia técnica, la colaboración y la innovación sean el centro de la cultura.",
+
+  "work_experience": [
+    {
+      "position": "Software Engineer",
+      "company": "Mercado Libre",
+      "location": "Argentina",
+      "start_date": "2022-11",
+      "end_date": "presente",
+      "description": "Formo parte del equipo de ingeniería responsable del diseño, desarrollo y monitoreo de microservicios de alta disponibilidad, orientados a optimizar la eficiencia, escalabilidad y seguridad de las aplicaciones core del ecosistema de Mercado Libre. Desarrollo soluciones backend en Go (Golang), Java y Node.js, aplicando principios de Clean Architecture, desarrollo seguro y CI/CD para asegurar entregas confiables y de calidad. Trabajo en entornos de microservicios, integrando buenas prácticas de observabilidad, trazabilidad, SRE, optimización y automatización continua.",
+      "achievements": [
+        "Diseño, desarrollo y mantenimiento de microservicios y APIs REST de misión crítica.",
+        "Aplicación de buenas prácticas de seguridad y revisión de código dentro del programa interno de desarrollo seguro (security guardians).",
+        "Colaboración con equipos distribuidos en Latinoamérica bajo metodologías ágiles (Scrum / Kanban).",
+        "Participación en guardias pasivas para garantizar la continuidad operativa de los servicios.",
+        "Creación de agentes inteligentes y automatizaciones internas utilizando modelos Gemini (Google), GPT (OpenAI) y Claude (Anthropic).",
+        "Uso de herramientas de asistencia al desarrollo como GitHub Copilot, Cursor, Windsurf y NotebookLM, potenciando la productividad y calidad del código.",
+        "Evaluación y experimentación con LLMs para optimizar procesos de desarrollo, documentación técnica, seguridad y debugging."
+      ],
+      "technologies": ["Go", "Java", "Node.js", "Clean Architecture", "CI/CD", "Datadog", "Kibana", "Grafana", "New Relic", "Gemini", "GPT", "Claude", "GitHub Copilot"]
+    },
+    {
+      "position": "Analista SR Programador",
+      "company": "Swiss Medical Group",
+      "location": "Provincia de Buenos Aires, Argentina",
+      "start_date": "2022-05",
+      "end_date": "2022-11",
+      "description": "Análisis, diseño y construcción de nuevas funcionalidades para la Web de prestadores, mejorando la experiencia del usuario y optimizando los procesos internos.",
+      "achievements": [
+        "Identifiqué y resolví bugs tanto en la Web como en la App de prestadores, garantizando la estabilidad y el correcto funcionamiento de las plataformas.",
+        "Diseñé y desarrollé ABMs (Altas, Bajas y Modificaciones) para el sistema de control interno de usuarios de prestadores, facilitando la gestión y el acceso a la información.",
+        "Participé activamente en el proyecto de migración de tecnologías de la Web de prestadores, contribuyendo con soluciones técnicas y asegurando una transición eficiente y sin contratiempos.",
+        "Colaboré en la documentación de la arquitectura y tecnologías utilizadas en la Web y App, asegurando un conocimiento claro y accesible para el equipo."
+      ],
+      "technologies": ["HTML", "CSS", "PHP", "JavaScript", "jQuery", "React", "Java", "SQL Server"]
+    },
+    {
+      "position": "Desarrollador Web Full Stack",
+      "company": "Freelance",
+      "location": "Venezuela",
+      "start_date": "2020-06",
+      "end_date": "2022-02",
+      "description": "Diseño, desarrollo y soporte de soluciones web personalizadas para clientes en Estados Unidos y Europa.",
+      "achievements": [
+        "Creación de sitios web, sistemas ERP y plataformas de ecommerce utilizando PHP, WordPress, WooCommerce, ACF, Laravel, JavaScript, HTML, CSS, C# y .NET.",
+        "Optimización del rendimiento y la usabilidad de sitios web y sistemas, mejorando la experiencia del usuario y la eficiencia de los procesos empresariales."
+      ],
+      "technologies": ["PHP", "WordPress", "WooCommerce", "Laravel", "JavaScript", "HTML", "CSS", "C#", ".NET"]
+    },
+    {
+      "position": "Coordinador de Infraestructura Tecnológica ATIT",
+      "company": "CORPOELEC",
+      "location": "Venezuela",
+      "start_date": "2018-12",
+      "end_date": "2022-02",
+      "description": "Coordinación del equipo de analistas Help Desk en la atención de requerimientos de software y hardware para más de 600 usuarios en la región de Nueva Esparta.",
+      "achievements": [
+        "Diseñé y elaboré planes anuales para el mantenimiento del centro de datos, servidores y estaciones de trabajo.",
+        "Supervisé la implementación de soluciones tecnológicas, optimizando procesos y mejorando la eficiencia operativa.",
+        "Gestioné recursos y prioridades para garantizar la continuidad de los servicios tecnológicos.",
+        "Colaboré con otros departamentos para alinear las necesidades tecnológicas con los objetivos estratégicos de la organización."
+      ],
+      "technologies": []
+    },
+    {
+      "position": "Desarrollador Web Full Stack",
+      "company": "M&M Soluciones Tecnológicas",
+      "location": "Venezuela",
+      "start_date": "2016-05",
+      "end_date": "2020-02",
+      "description": "Diseño y desarrollo de sitios web empresariales para clientes en América Latina y Estados Unidos.",
+      "achievements": [
+        "Construcción de webs en WordPress utilizando PHP, Elementor, HTML, CSS, JavaScript y Bootstrap, garantizando diseños responsivos, modernos y de alto rendimiento.",
+        "Optimización del rendimiento y la usabilidad de los sitios web, implementando buenas prácticas de desarrollo.",
+        "Mantenimiento y actualización de sitios web existentes, realizando mejoras continuas y resolviendo incidencias."
+      ],
+      "technologies": ["PHP", "WordPress", "Elementor", "HTML", "CSS", "JavaScript", "Bootstrap"]
+    },
+    {
+      "position": "Analista Help Desk",
+      "company": "CORPOELEC",
+      "location": "Venezuela",
+      "start_date": "2018-01",
+      "end_date": "2018-12",
+      "description": "Coordinación y ejecución del apoyo técnico a usuarios de equipos computacionales, brindando asesoría y soluciones efectivas para garantizar la continuidad operativa.",
+      "achievements": [
+        "Brindé soporte técnico integral (telefónico, presencial y remoto) a través del escritorio de ayuda (OTRS).",
+        "Supervisé la configuración y entrega de equipos de cómputo.",
+        "Desarrollé y documenté soluciones para problemas recurrentes, optimizando los procesos de soporte.",
+        "Gestioné el inventario de Hardware y Software.",
+        "Administré el Antivirus corporativo.",
+        "Elaboré y actualicé guías de instalación de aplicaciones.",
+        "Participé activamente en equipos de trabajo para proyectos que requerían asistencia técnica."
+      ],
+      "technologies": ["Windows", "Linux", "OTRS"]
+    },
+    {
+      "position": "Operador de Servidores",
+      "company": "CORPOELEC",
+      "location": "Nueva Esparta, Venezuela",
+      "start_date": "2010-08",
+      "end_date": "2018-12",
+      "description": "Supervisión y ejecución de procesos batch para sistemas comerciales y de distribución.",
+      "achievements": [
+        "Gestioné y respaldé bases de datos Oracle en sistemas críticos.",
+        "Supervisé la impresión de facturas, optimizando los procesos.",
+        "Brindé soporte técnico integral (telefónico, presencial y remoto) a usuarios.",
+        "Instalé y configuré hardware y software."
+      ],
+      "technologies": ["Oracle", "Windows", "Linux"]
+    },
+    {
+      "position": "Profesor Universitario",
+      "company": "Universidad de Oriente",
+      "location": "Nueva Esparta, Venezuela",
+      "start_date": "2009-03",
+      "end_date": "2010-08",
+      "description": "Docente instructor de la asignatura de Informática en la Escuela de Hotelería y Turismo.",
+      "achievements": [
+        "Diseñé y desarrollé el contenido programático de la asignatura, transformándolo de un enfoque orientado a objetivos a uno basado en competencias.",
+        "Brindé formación en habilidades informáticas esenciales para el ámbito turístico y hotelero.",
+        "Fomenté el aprendizaje práctico mediante la implementación de ejercicios y proyectos que simulaban situaciones reales del sector."
+      ],
+      "technologies": []
+    }
+  ],
+
+  "education": [
+    {
+      "degree": "Licenciado en Informática",
+      "institution": "Universidad de Oriente",
+      "location": "Venezuela",
+      "start_date": "2003",
+      "end_date": "2008",
+      "status": "completo"
+    },
+    {
+      "degree": "Maestría en Informática Aplicada",
+      "institution": "Universidad de Oriente",
+      "location": "Cuba",
+      "start_date": "2010",
+      "end_date": "2014",
+      "status": "completo"
+    }
+  ],
+
+  "certifications": [
+    {
+      "name": "Curso de Go - Como programar y crear APIs RESTful con Golang",
+      "institution": "",
+      "date": "",
+      "url": ""
+    },
+    {
+      "name": "Curso Profesional de Git y GitHub",
+      "institution": "",
+      "date": "",
+      "url": ""
+    },
+    {
+      "name": "Inteligencia Emocional en el Trabajo: Aprende tus Emociones",
+      "institution": "",
+      "date": "",
+      "url": ""
+    },
+    {
+      "name": "Curso de Bitcoin y Blockchain",
+      "institution": "",
+      "date": "",
+      "url": ""
+    },
+    {
+      "name": "Curso de Gestión de Equipos Ágiles",
+      "institution": "",
+      "date": "",
+      "url": ""
+    }
+  ],
+
+  "technical_skills": {
+    "languages": ["Go", "Java", "Python", "JavaScript", "PHP", "Node.js", "C#", "HTML", "CSS"],
+    "frameworks_libraries": ["React", "jQuery", "Laravel", "WordPress", "WooCommerce", "Bootstrap"],
+    "tools": ["Git", "Docker", "Kubernetes", "AWS", "CI/CD", "Datadog", "Kibana", "Grafana", "New Relic", "OTRS"],
+    "databases": ["SQL Server", "Oracle"],
+    "other": ["MCP (Model Context Protocol)", "Integración de APIs de LLMs", "Clean Architecture", "Microservicios", "APIs REST", "Scrum", "Kanban", "Gemini", "GPT", "Claude"]
+  },
+
+  "soft_skills": ["Comunicación", "Trabajo en equipo", "Resolución de problemas", "Liderazgo", "Gestión de equipos"],
+
+  "languages": [
+    {"language": "Español", "level": "nativo"},
+    {"language": "Inglés", "level": "técnico profesional"}
+  ],
+
+  "personal_projects": []
+}

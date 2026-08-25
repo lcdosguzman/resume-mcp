@@ -1,0 +1,61 @@
+{
+  "_note": "This file defines HOW the generated resume should look (your data belongs in data/profile.json). Customize it as needed.",
+
+  "output_language": "same_as_profile",
+  "output_format": "Markdown",
+
+  "sections": [
+    {
+      "id": "header",
+      "titulo": null,
+      "instructions": "Full name as the main title, followed by one line with city, email, phone, LinkedIn, and GitHub separated by '·'."
+    },
+    {
+      "id": "professional_summary",
+      "title": "Professional Summary",
+      "instructions": "3-4 lines. Mention the profile (backend/software engineer), years of experience, specialization (microservices, AI, agents), and professional objective. Use the profile summary as a basis."
+    },
+    {
+      "id": "technical_skills",
+      "title": "Technical Skills",
+      "instructions": "Group into categories: Languages, Databases, AI/ML, Microservices/Cloud, and Tools/Observability. Prioritize the most relevant skills and avoid overly long lists (maximum 5-6 items per category)."
+    },
+    {
+      "id": "work_experience",
+      "title": "Work Experience",
+      "instructions": "Reverse chronological order (most recent first). For each position include title, company, location (when applicable), dates (month/year), and achievement/responsibility bullets. Prioritize measurable, action-oriented achievements. Include technologies at the end of each entry. Format: '**Position** | Company | Dates'."
+    },
+    {
+      "id": "education",
+      "title": "Education",
+      "instructions": "Reverse chronological order. Include degree, institution, graduation year, and GPA/grade when available. Format: '**Degree**, Institution, Year | GPA: X'."
+    },
+    {
+      "id": "soft_skills",
+      "title": "Soft Skills",
+      "instructions": "List 3-5 key soft skills (for example: communication, leadership, teamwork)."
+    },
+    {
+      "id": "languages",
+      "title": "Languages",
+      "instructions": "List each language and proficiency level (native, professional, intermediate, etc.)."
+    },
+    {
+      "id": "job_fit_evaluation",
+      "title": "Job Fit Evaluation",
+      "instructions": "Mandatory final section. Show an overall integer score from 1 to 10 indicating how closely the real profile matches the job. Include a brief justification, 3-5 relevant strengths, and the main weaknesses or gaps. Clearly distinguish demonstrated, partially demonstrated, and unverified requirements. Do not penalize information the job does not require and do not present unverified skills as experience. Suggested format: '**Fit score:** X/10', followed by '**Strengths:**' and '**Weaknesses or gaps:**'."
+    }
+  ],
+
+  "general_rules": [
+    "Do not invent experience, degrees, companies, or dates that are not present in data/profile.json.",
+    "Prioritize content according to job relevance. If space remains within the one-page limit, include additional truthful and useful information from the profile, without fabricating new information.",
+    "Use a professional, direct tone without empty adjectives.",
+    "Target length: one printed page. Keep all sections except 'job_fit_evaluation' between approximately 400 and 600 words; the 'job_fit_evaluation' section does not count toward this word limit.",
+    "Use bullets and bold text for titles and positions.",
+    "Optimize vocabulary for ATS systems by using industry keywords when they genuinely apply to the profile.",
+    "Detect the predominant language of the profile's narrative content and write the entire resume in that language. Count prose fields such as the summary, descriptions, achievements, education, certifications, and soft skills; do not base the decision only on names, company names, technologies, or URLs. If Spanish content predominates, write the resume in Spanish. If English content predominates, write it in English. Translate section headings and fit-evaluation labels to the selected language.",
+    "Dates must use the 'MM/YYYY' or 'YYYY' format as appropriate.",
+    "The fit score must be honest and justifiable through an explicit comparison between the job requirements and the evidence available in data/profile.json; it must not exceed what the data supports."
+  ]
+}
