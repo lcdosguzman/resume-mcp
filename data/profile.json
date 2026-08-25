@@ -23,7 +23,7 @@
       "end_date": "presente",
       "description": "Formo parte del equipo de ingeniería responsable del diseño, desarrollo y monitoreo de microservicios de alta disponibilidad, orientados a optimizar la eficiencia, escalabilidad y seguridad de las aplicaciones core del ecosistema de Mercado Libre. Desarrollo soluciones backend en Go (Golang), Java y Node.js, aplicando principios de Clean Architecture, desarrollo seguro y CI/CD para asegurar entregas confiables y de calidad. Trabajo en entornos de microservicios, integrando buenas prácticas de observabilidad, trazabilidad, SRE, optimización y automatización continua.",
       "achievements": [
-        "Diseño, desarrollo y mantenimiento de microservicios y APIs REST de misión crítica.",
+        "Diseño, desarrollo y mantenimiento de microservicios y APIs REST de flujos crítica.",
         "Aplicación de buenas prácticas de seguridad y revisión de código dentro del programa interno de desarrollo seguro (security guardians).",
         "Colaboración con equipos distribuidos en Latinoamérica bajo metodologías ágiles (Scrum / Kanban).",
         "Participación en guardias pasivas para garantizar la continuidad operativa de los servicios.",
@@ -31,7 +31,7 @@
         "Uso de herramientas de asistencia al desarrollo como GitHub Copilot, Cursor, Windsurf y NotebookLM, potenciando la productividad y calidad del código.",
         "Evaluación y experimentación con LLMs para optimizar procesos de desarrollo, documentación técnica, seguridad y debugging."
       ],
-      "technologies": ["Go", "Java", "Node.js", "Clean Architecture", "CI/CD", "Datadog", "Kibana", "Grafana", "New Relic", "Gemini", "GPT", "Claude", "GitHub Copilot"]
+      "technologies": ["Go", "Java", "Node.js", "Clean Architecture", "CI/CD", "Datadog", "Kibana", "Grafana","OpenTelemetry", "New Relic", "Gemini", "GPT", "Claude", "Copilot", "Codex", "Cursor", "Windsurf", "NotebookLM", "MCP (Model Context Protocol)","Github","React","SDD","SKILLS", "N8N"]
     },
     {
       "position": "Analista SR Programador",
@@ -46,7 +46,7 @@
         "Participé activamente en el proyecto de migración de tecnologías de la Web de prestadores, contribuyendo con soluciones técnicas y asegurando una transición eficiente y sin contratiempos.",
         "Colaboré en la documentación de la arquitectura y tecnologías utilizadas en la Web y App, asegurando un conocimiento claro y accesible para el equipo."
       ],
-      "technologies": ["HTML", "CSS", "PHP", "JavaScript", "jQuery", "React", "Java", "SQL Server"]
+      "technologies": ["HTML", "CSS", "PHP", "JavaScript", "jQuery", "React", "Java", "SQL Server","Git","Git Lab"]
     },
     {
       "position": "Desarrollador Web Full Stack",
@@ -59,7 +59,7 @@
         "Creación de sitios web, sistemas ERP y plataformas de ecommerce utilizando PHP, WordPress, WooCommerce, ACF, Laravel, JavaScript, HTML, CSS, C# y .NET.",
         "Optimización del rendimiento y la usabilidad de sitios web y sistemas, mejorando la experiencia del usuario y la eficiencia de los procesos empresariales."
       ],
-      "technologies": ["PHP", "WordPress", "WooCommerce", "Laravel", "JavaScript", "HTML", "CSS", "C#", ".NET"]
+      "technologies": ["PHP", "WordPress", "WooCommerce", "Laravel", "JavaScript", "HTML", "CSS", "C#", ".NET", "MySQL", "AWS", "Git"]
     },
     {
       "position": "Coordinador de Infraestructura Tecnológica ATIT",
@@ -74,7 +74,7 @@
         "Gestioné recursos y prioridades para garantizar la continuidad de los servicios tecnológicos.",
         "Colaboré con otros departamentos para alinear las necesidades tecnológicas con los objetivos estratégicos de la organización."
       ],
-      "technologies": []
+      "technologies": ["Windows", "Linux", "OTRS", "Microsoft Office","SAP", "Active Directory", "Antivirus corporativo","Grafana","MySQL","HTML","OPEN SGC","OPEN SGD"]
     },
     {
       "position": "Desarrollador Web Full Stack",
@@ -88,7 +88,7 @@
         "Optimización del rendimiento y la usabilidad de los sitios web, implementando buenas prácticas de desarrollo.",
         "Mantenimiento y actualización de sitios web existentes, realizando mejoras continuas y resolviendo incidencias."
       ],
-      "technologies": ["PHP", "WordPress", "Elementor", "HTML", "CSS", "JavaScript", "Bootstrap"]
+      "technologies": ["PHP", "WordPress", "Elementor", "HTML", "CSS", "JavaScript", "Bootstrap", "MySQL","AWS"]
     },
     {
       "position": "Analista Help Desk",
@@ -106,7 +106,7 @@
         "Elaboré y actualicé guías de instalación de aplicaciones.",
         "Participé activamente en equipos de trabajo para proyectos que requerían asistencia técnica."
       ],
-      "technologies": ["Windows", "Linux", "OTRS"]
+      "technologies": ["Windows", "Linux", "OTRS", "Microsoft Office","SAP", "Active Directory", "Antivirus corporativo","Grafana","MySQL","HTML","OPEN SGC","OPEN SGD"]
     },
     {
       "position": "Operador de Servidores",
@@ -121,7 +121,7 @@
         "Brindé soporte técnico integral (telefónico, presencial y remoto) a usuarios.",
         "Instalé y configuré hardware y software."
       ],
-      "technologies": ["Oracle", "Windows", "Linux"]
+      "technologies": ["Oracle", "Microsoft Windows", "Linux", "SSH", "Microsoft Office","Microsoft Windows","OPEN SGC","OPEN SGD","SAP","Active Directory"]
     },
     {
       "position": "Profesor Universitario",
@@ -135,7 +135,7 @@
         "Brindé formación en habilidades informáticas esenciales para el ámbito turístico y hotelero.",
         "Fomenté el aprendizaje práctico mediante la implementación de ejercicios y proyectos que simulaban situaciones reales del sector."
       ],
-      "technologies": []
+      "technologies": ["Microsoft Office", "Microsoft Windows", "Linux"]
     }
   ],
 
