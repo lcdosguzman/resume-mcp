@@ -20,7 +20,7 @@ When helping someone configure this project, follow this order:
    `go version`. Go 1.22 or newer is required.
 2. Work from the cloned project root, where `go.mod` and `main.go` are located.
 3. Verify that `data/profile.json` exists and contains real candidate data.
-4. Run `go test ./...` and build with `go build -o resume-mcp-server .`.
+4. Run `go test ./...` and build with `go build -o resume-mcp-server ./cmd/resume-mcp`.
 5. Start `./resume-mcp-server` in a separate terminal.
 6. Check `http://127.0.0.1:8090/health` before configuring an MCP client.
 7. Configure the client using the instructions below.
@@ -58,7 +58,7 @@ when Spanish is the majority, or English when English is the majority.
 ```bash
 cd /path/to/resume-mcp
 go test ./...
-go build -o resume-mcp-server .
+go build -o resume-mcp-server ./cmd/resume-mcp
 ./resume-mcp-server
 ```
 
@@ -191,13 +191,21 @@ Point the inspector to `http://127.0.0.1:8090/mcp` as an HTTP MCP server.
 ```text
 resume-mcp/
 ├── go.mod
-├── main.go                 # HTTP server, routes, tool registration, handlers
+├── cmd/
+│   └── resume-mcp/
+│       └── main.go         # Application composition and HTTP server
+├── internal/
+│   ├── config/              # Environment and application configuration
+│   ├── profile/             # Profile and resume format file repository
+│   └── resume/              # Resume context and Markdown writer
 ├── data/
 │   ├── profile.json           # Active candidate data
 │   └── resume_format.json     # Resume structure and generation rules
 ├── mcp/
 │   ├── types.go             # JSON-RPC 2.0 and MCP types
-│   └── server.go            # MCP HTTP dispatcher
+│   ├── server.go            # MCP HTTP dispatcher
+│   ├── tools.go             # MCP tool definitions and adapters
+│   └── prompts.go           # MCP prompt definitions and adapters
 └── output/                  # Generated Markdown resumes
 ```
 
