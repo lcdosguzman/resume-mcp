@@ -2,9 +2,14 @@ package mcp
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"sort"
 )
+
+const maxRequestBodySize = 1 << 20
 
 // ToolHandler implements a tool's logic.
 // It receives raw JSON arguments and returns the result or an error.
@@ -70,10 +75,19 @@ func (s *Server) serveHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req Request
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	decoder := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxRequestBodySize))
+	if err := decoder.Decode(&req); err != nil {
 		writeJSON(w, Response{
 			JSONRPC: "2.0",
 			Error:   &RPCError{Code: CodeParseError, Message: "invalid JSON: " + err.Error()},
+		})
+		return
+	}
+	var extra interface{}
+	if err := decoder.Decode(&extra); err != io.EOF {
+		writeJSON(w, Response{
+			JSONRPC: "2.0",
+			Error:   &RPCError{Code: CodeParseError, Message: "request must contain exactly one JSON value"},
 		})
 		return
 	}
@@ -91,6 +105,10 @@ func (s *Server) serveHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) dispatch(req Request) Response {
 	base := Response{JSONRPC: "2.0", ID: req.ID}
+	if err := validateRequest(req); err != nil {
+		base.Error = &RPCError{Code: CodeInvalidRequest, Message: err.Error()}
+		return base
+	}
 
 	switch req.Method {
 	case "initialize":
@@ -108,9 +126,10 @@ func (s *Server) dispatch(req Request) Response {
 		return base
 
 	case "tools/list":
-		defs := make([]Tool, 0, len(s.tools))
-		for _, t := range s.tools {
-			defs = append(defs, t.def)
+		names := sortedNames(s.tools)
+		defs := make([]Tool, 0, len(names))
+		for _, name := range names {
+			defs = append(defs, s.tools[name].def)
 		}
 		base.Result = ListToolsResult{Tools: defs}
 
@@ -118,6 +137,10 @@ func (s *Server) dispatch(req Request) Response {
 		var params CallToolParams
 		if err := json.Unmarshal(req.Params, &params); err != nil {
 			base.Error = &RPCError{Code: CodeInvalidParams, Message: "invalid parameters: " + err.Error()}
+			return base
+		}
+		if params.Name == "" {
+			base.Error = &RPCError{Code: CodeInvalidParams, Message: "tool name cannot be empty"}
 			return base
 		}
 		tool, ok := s.tools[params.Name]
@@ -136,9 +159,10 @@ func (s *Server) dispatch(req Request) Response {
 		base.Result = result
 
 	case "prompts/list":
-		defs := make([]Prompt, 0, len(s.prompts))
-		for _, p := range s.prompts {
-			defs = append(defs, p.def)
+		names := sortedNames(s.prompts)
+		defs := make([]Prompt, 0, len(names))
+		for _, name := range names {
+			defs = append(defs, s.prompts[name].def)
 		}
 		base.Result = ListPromptsResult{Prompts: defs}
 
@@ -146,6 +170,10 @@ func (s *Server) dispatch(req Request) Response {
 		var params GetPromptParams
 		if err := json.Unmarshal(req.Params, &params); err != nil {
 			base.Error = &RPCError{Code: CodeInvalidParams, Message: "invalid parameters: " + err.Error()}
+			return base
+		}
+		if params.Name == "" {
+			base.Error = &RPCError{Code: CodeInvalidParams, Message: "prompt name cannot be empty"}
 			return base
 		}
 		prompt, ok := s.prompts[params.Name]
@@ -165,6 +193,36 @@ func (s *Server) dispatch(req Request) Response {
 	}
 
 	return base
+}
+
+func validateRequest(req Request) error {
+	if req.JSONRPC != "2.0" {
+		return fmt.Errorf("jsonrpc must be \"2.0\"")
+	}
+	if req.Method == "" {
+		return fmt.Errorf("method cannot be empty")
+	}
+	if req.ID != nil {
+		var id interface{}
+		if err := json.Unmarshal(req.ID, &id); err != nil {
+			return fmt.Errorf("invalid id: %w", err)
+		}
+		switch id.(type) {
+		case nil, string, float64:
+		default:
+			return fmt.Errorf("id must be a string, number, or null")
+		}
+	}
+	return nil
+}
+
+func sortedNames[T any](registered map[string]T) []string {
+	names := make([]string, 0, len(registered))
+	for name := range registered {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	return names
 }
 
 func writeJSON(w http.ResponseWriter, v interface{}) {

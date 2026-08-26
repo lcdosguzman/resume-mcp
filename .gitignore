@@ -1,2 +1,6 @@
 output/*
 !output/.gitkeep
+
+# Build artifacts
+resume-mcp-server
+resume-mcp

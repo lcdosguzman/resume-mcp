@@ -18,7 +18,7 @@ When helping someone configure this project, follow this order:
 
 1. Confirm the operating system, available shell, and Go version with
    `go version`. Go 1.22 or newer is required.
-2. Work from the cloned project root, where `go.mod` and `main.go` are located.
+2. Work from the cloned project root, where `go.mod` and `cmd/resume-mcp/main.go` are located.
 3. Verify that `data/profile.json` exists and contains real candidate data.
 4. Run `go test ./...` and build with `go build -o resume-mcp-server ./cmd/resume-mcp`.
 5. Start `./resume-mcp-server` in a separate terminal.
@@ -33,11 +33,30 @@ exact command and its complete output first.
 
 ## Requirements
 
+- Git, to clone the repository.
 - Go 1.22 or newer (`go version`).
 - Node.js and `npx` are required only when using the `mcp-remote` bridge.
 
 The Go server has no external Go dependencies and does not require internet
 access to build.
+
+Generated binaries and resumes are local artifacts and are not tracked by Git.
+
+## Download and Install
+
+Clone the repository and move into its root directory:
+
+```bash
+git clone https://github.com/lcdosguzman/resume-mcp.git
+cd resume-mcp
+```
+
+Verify the Go installation and run the tests before starting the server:
+
+```bash
+go version
+go test ./...
+```
 
 ## Configure Candidate Data
 
@@ -47,6 +66,10 @@ Edit these files before using the server:
   certifications, and languages.
 - `data/resume_format.json`: output sections, ordering, style, length, and
   fit-evaluation rules.
+
+`data/profile.json` contains the candidate's personal and professional
+information. Replace the example data with your own data before connecting an
+LLM, and do not commit secrets or sensitive information.
 
 The profile uses English JSON keys. Keep the structure consistent when adding
 or removing fields. Do not place secrets in the profile. The generated resume
@@ -61,6 +84,15 @@ go test ./...
 go build -o resume-mcp-server ./cmd/resume-mcp
 ./resume-mcp-server
 ```
+
+For local development, you can run the server without creating a binary:
+
+```bash
+go run ./cmd/resume-mcp
+```
+
+The binary created by `go build` is only a local artifact. It is not required
+to download or commit it to the repository.
 
 The default MCP endpoint is `http://127.0.0.1:8090/mcp`. Change the port with
 `MCP_PORT`:
@@ -199,8 +231,8 @@ resume-mcp/
 │   ├── profile/             # Profile and resume format file repository
 │   └── resume/              # Resume context and Markdown writer
 ├── data/
-│   ├── profile.json           # Active candidate data
-│   └── resume_format.json     # Resume structure and generation rules
+│   ├── profile.json          # Active candidate data
+│   └── resume_format.json    # Resume structure and generation rules
 ├── mcp/
 │   ├── types.go             # JSON-RPC 2.0 and MCP types
 │   ├── server.go            # MCP HTTP dispatcher
@@ -215,7 +247,12 @@ resume-mcp/
 - **`could not read data/profile.json`:** run the binary from the project root
   and verify that `data/profile.json` exists.
 - **`bind: address already in use`:** choose another port with `MCP_PORT` and
-  update the MCP client URL.
+  use the same port when checking health and configuring the MCP client:
+
+  ```bash
+  MCP_PORT=9000 ./resume-mcp-server
+  curl http://127.0.0.1:9000/health
+  ```
 - **Download URL does not open:** make sure the server is still running and
   that the URL uses the configured port.
 - **The client cannot find the tools:** verify `/health`, verify the `/mcp` URL,
