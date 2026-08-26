@@ -10,10 +10,20 @@ import (
 // It receives raw JSON arguments and returns the result or an error.
 type ToolHandler func(args json.RawMessage) (CallToolResult, error)
 
+// PromptHandler implements a prompt's logic.
+// It receives string arguments and returns the prompt messages or an error.
+type PromptHandler func(args map[string]string) (GetPromptResult, error)
+
 // registeredTool groups a tool definition with its handler.
 type registeredTool struct {
 	def     Tool
 	handler ToolHandler
+}
+
+// registeredPrompt groups a prompt definition with its handler.
+type registeredPrompt struct {
+	def     Prompt
+	handler PromptHandler
 }
 
 // Server is the MCP HTTP server (simple Streamable HTTP mode without SSE).
@@ -21,6 +31,7 @@ type Server struct {
 	name    string
 	version string
 	tools   map[string]registeredTool
+	prompts map[string]registeredPrompt
 }
 
 // NewServer creates a new MCP server.
@@ -29,12 +40,18 @@ func NewServer(name, version string) *Server {
 		name:    name,
 		version: version,
 		tools:   make(map[string]registeredTool),
+		prompts: make(map[string]registeredPrompt),
 	}
 }
 
 // RegisterTool adds a tool to the server.
 func (s *Server) RegisterTool(def Tool, handler ToolHandler) {
 	s.tools[def.Name] = registeredTool{def: def, handler: handler}
+}
+
+// RegisterPrompt adds a prompt to the server.
+func (s *Server) RegisterPrompt(def Prompt, handler PromptHandler) {
+	s.prompts[def.Name] = registeredPrompt{def: def, handler: handler}
 }
 
 // Handler returns the http.Handler to mount on the mux (the /mcp endpoint).
@@ -80,7 +97,8 @@ func (s *Server) dispatch(req Request) Response {
 		base.Result = InitializeResult{
 			ProtocolVersion: "2025-03-26",
 			Capabilities: Capabilities{
-				Tools: &ToolsCapability{ListChanged: false},
+				Tools:   &ToolsCapability{ListChanged: false},
+				Prompts: &PromptsCapability{ListChanged: false},
 			},
 			ServerInfo: ServerInfo{Name: s.name, Version: s.version},
 		}
@@ -113,6 +131,31 @@ func (s *Server) dispatch(req Request) Response {
 				Content: []ContentBlock{{Type: "text", Text: err.Error()}},
 				IsError: true,
 			}
+			return base
+		}
+		base.Result = result
+
+	case "prompts/list":
+		defs := make([]Prompt, 0, len(s.prompts))
+		for _, p := range s.prompts {
+			defs = append(defs, p.def)
+		}
+		base.Result = ListPromptsResult{Prompts: defs}
+
+	case "prompts/get":
+		var params GetPromptParams
+		if err := json.Unmarshal(req.Params, &params); err != nil {
+			base.Error = &RPCError{Code: CodeInvalidParams, Message: "invalid parameters: " + err.Error()}
+			return base
+		}
+		prompt, ok := s.prompts[params.Name]
+		if !ok {
+			base.Error = &RPCError{Code: CodeMethodNotFound, Message: "unknown prompt: " + params.Name}
+			return base
+		}
+		result, err := prompt.handler(params.Arguments)
+		if err != nil {
+			base.Error = &RPCError{Code: CodeInvalidParams, Message: err.Error()}
 			return base
 		}
 		base.Result = result

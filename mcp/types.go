@@ -47,7 +47,8 @@ type InitializeResult struct {
 
 // Capabilities describes the features supported by the server.
 type Capabilities struct {
-	Tools *ToolsCapability `json:"tools,omitempty"`
+	Tools   *ToolsCapability   `json:"tools,omitempty"`
+	Prompts *PromptsCapability `json:"prompts,omitempty"`
 }
 
 // ToolsCapability indicates tool support and whether list changes are notified.
@@ -55,10 +56,54 @@ type ToolsCapability struct {
 	ListChanged bool `json:"listChanged"`
 }
 
+// PromptsCapability indicates prompt support and whether list changes are notified.
+type PromptsCapability struct {
+	ListChanged bool `json:"listChanged"`
+}
+
 // ServerInfo identifies the MCP server.
 type ServerInfo struct {
 	Name    string `json:"name"`
 	Version string `json:"version"`
+}
+
+// ---------- MCP: prompts ----------
+
+// Prompt describes a reusable prompt exposed by the server.
+type Prompt struct {
+	Name        string           `json:"name"`
+	Description string           `json:"description,omitempty"`
+	Arguments   []PromptArgument `json:"arguments,omitempty"`
+}
+
+// PromptArgument describes an argument accepted by a prompt.
+type PromptArgument struct {
+	Name        string `json:"name"`
+	Description string `json:"description,omitempty"`
+	Required    bool   `json:"required,omitempty"`
+}
+
+// ListPromptsResult is the response to the "prompts/list" method.
+type ListPromptsResult struct {
+	Prompts []Prompt `json:"prompts"`
+}
+
+// GetPromptParams are the parameters for the "prompts/get" method.
+type GetPromptParams struct {
+	Name      string            `json:"name"`
+	Arguments map[string]string `json:"arguments,omitempty"`
+}
+
+// PromptMessage is a message returned by a prompt.
+type PromptMessage struct {
+	Role    string       `json:"role"`
+	Content ContentBlock `json:"content"`
+}
+
+// GetPromptResult is the response to the "prompts/get" method.
+type GetPromptResult struct {
+	Description string          `json:"description,omitempty"`
+	Messages    []PromptMessage `json:"messages"`
 }
 
 // ---------- MCP: tools/list ----------
