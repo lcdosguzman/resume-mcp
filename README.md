@@ -40,7 +40,18 @@ exact command and its complete output first.
 The Go server has no external Go dependencies and does not require internet
 access to build.
 
-Generated binaries and resumes are local artifacts and are not tracked by Git.
+Generated binaries, resumes, and local scratch files are local artifacts and are not tracked by Git.
+
+## Git hygiene
+
+Keep the repository clean by not committing:
+
+- build output such as `resume-mcp-server` or `resume-mcp`,
+- generated resumes in `output/`,
+- macOS/editor metadata such as `.DS_Store`,
+- local copies like `data/profile copy.json`.
+
+These are intentionally ignored by `.gitignore` and should remain local-only.
 
 ## Download and Install
 

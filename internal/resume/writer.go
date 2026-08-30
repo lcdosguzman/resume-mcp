@@ -30,28 +30,67 @@ func (w Writer) Save(content, requestedName string) (string, error) {
 		return "", fmt.Errorf("could not create output directory: %w", err)
 	}
 
+	fileName := w.sanitizeFileName(requestedName)
+	path, err := w.uniquePath(fileName)
+	if err != nil {
+		return "", err
+	}
+	if err := w.writeFile(path, content); err != nil {
+		return "", err
+	}
+	return w.savedMessage(path)
+}
+
+func (w Writer) sanitizeFileName(requestedName string) string {
 	fileName := strings.TrimSpace(requestedName)
 	if fileName == "" {
-		fileName = "cv"
-	} else {
-		fileName = safeFileNamePattern.ReplaceAllString(fileName, "_")
-	}
-	fileName = strings.Trim(fileName, "_")
-	if fileName == "" {
-		fileName = "cv"
+		return "cv"
 	}
 
+	fileName = safeFileNamePattern.ReplaceAllString(fileName, "_")
+	fileName = strings.Trim(fileName, "_")
+	if fileName == "" {
+		return "cv"
+	}
+	return fileName
+}
+
+func (w Writer) uniquePath(fileName string) (string, error) {
 	clock := w.now
 	if clock == nil {
 		clock = time.Now
 	}
-	fileName += "_" + clock().Format("20060102_150405.000000000")
+	baseName := fileName + "_" + clock().Format("20060102_150405.000000000")
+	path := filepath.Join(w.outputDir, baseName+".md")
 
-	path := filepath.Join(w.outputDir, fileName+".md")
-	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
-		return "", fmt.Errorf("could not write file: %w", err)
+	for i := 0; ; i++ {
+		if _, err := os.Stat(path); err == nil {
+			path = filepath.Join(w.outputDir, fmt.Sprintf("%s_%d.md", baseName, i+1))
+			continue
+		} else if !os.IsNotExist(err) {
+			return "", fmt.Errorf("could not check file existence: %w", err)
+		}
+		return path, nil
 	}
+}
 
+func (w Writer) writeFile(path, content string) error {
+	fd, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+	if err != nil {
+		if !os.IsExist(err) {
+			return fmt.Errorf("could not write file: %w", err)
+		}
+		return fmt.Errorf("could not write file: %w", err)
+	}
+	defer fd.Close()
+
+	if _, err := fd.Write([]byte(content)); err != nil {
+		return fmt.Errorf("could not write file: %w", err)
+	}
+	return nil
+}
+
+func (w Writer) savedMessage(path string) (string, error) {
 	abs, err := filepath.Abs(path)
 	if err != nil {
 		return "", fmt.Errorf("could not resolve saved file path: %w", err)

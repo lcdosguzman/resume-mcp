@@ -6,7 +6,7 @@ import (
 )
 
 func RegisterPrompts(server *Server) {
-	server.RegisterPrompt(Prompt{
+	_ = server.RegisterPrompt(Prompt{
 		Name:        "tailor_resume",
 		Description: "Creates a tailored resume from a job description using the candidate profile and configured resume format.",
 		Arguments: []PromptArgument{

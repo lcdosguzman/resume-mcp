@@ -9,19 +9,19 @@ import (
 )
 
 func RegisterTools(server *Server, profileRepository profile.Repository, resumeService resume.Service) {
-	server.RegisterTool(Tool{
+	_ = server.RegisterTool(Tool{
 		Name:        "get_profile",
 		Description: "Returns the user's personal details, experience, education, and skills as JSON. Use this first to review the available information before tailoring a resume.",
 		InputSchema: InputSchema{Type: "object"},
 	}, getProfileTool(profileRepository))
 
-	server.RegisterTool(Tool{
+	_ = server.RegisterTool(Tool{
 		Name:        "get_resume_format",
 		Description: "Returns the structure and format that the generated resume must follow (sections, order, style, and length). Use it together with get_profile.",
 		InputSchema: InputSchema{Type: "object"},
 	}, getResumeFormatTool(profileRepository))
 
-	server.RegisterTool(Tool{
+	_ = server.RegisterTool(Tool{
 		Name:        "prepare_job_context",
 		Description: "Receives a job description and returns instructions for generating a resume tailored to that position, together with the profile and resume format. The model calling this tool must use the result to write the resume in Markdown and then save it with the 'save_resume' tool.",
 		InputSchema: InputSchema{
@@ -33,7 +33,7 @@ func RegisterTools(server *Server, profileRepository profile.Repository, resumeS
 		},
 	}, prepareJobContextTool(resumeService))
 
-	server.RegisterTool(Tool{
+	_ = server.RegisterTool(Tool{
 		Name:        "save_resume",
 		Description: "Saves the tailored resume, already written in Markdown by the model, as an .md file in the server's output/ directory.",
 		InputSchema: InputSchema{

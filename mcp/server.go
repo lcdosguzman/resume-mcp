@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strings"
 )
 
 const maxRequestBodySize = 1 << 20
@@ -50,13 +51,35 @@ func NewServer(name, version string) *Server {
 }
 
 // RegisterTool adds a tool to the server.
-func (s *Server) RegisterTool(def Tool, handler ToolHandler) {
+func (s *Server) RegisterTool(def Tool, handler ToolHandler) error {
+	if strings.TrimSpace(def.Name) == "" {
+		return fmt.Errorf("tool name cannot be empty")
+	}
+	if handler == nil {
+		return fmt.Errorf("tool %q handler cannot be nil", def.Name)
+	}
+	if _, exists := s.tools[def.Name]; exists {
+		return fmt.Errorf("tool %q is already registered", def.Name)
+	}
+
 	s.tools[def.Name] = registeredTool{def: def, handler: handler}
+	return nil
 }
 
 // RegisterPrompt adds a prompt to the server.
-func (s *Server) RegisterPrompt(def Prompt, handler PromptHandler) {
+func (s *Server) RegisterPrompt(def Prompt, handler PromptHandler) error {
+	if strings.TrimSpace(def.Name) == "" {
+		return fmt.Errorf("prompt name cannot be empty")
+	}
+	if handler == nil {
+		return fmt.Errorf("prompt %q handler cannot be nil", def.Name)
+	}
+	if _, exists := s.prompts[def.Name]; exists {
+		return fmt.Errorf("prompt %q is already registered", def.Name)
+	}
+
 	s.prompts[def.Name] = registeredPrompt{def: def, handler: handler}
+	return nil
 }
 
 // Handler returns the http.Handler to mount on the mux (the /mcp endpoint).

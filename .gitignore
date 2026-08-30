@@ -1,6 +1,12 @@
+.DS_Store
+**/.DS_Store
+
+data/profile copy.json
+
 output/*
 !output/.gitkeep
 
 # Build artifacts
 resume-mcp-server
 resume-mcp
+*.exe
