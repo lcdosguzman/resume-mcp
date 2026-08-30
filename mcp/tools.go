@@ -3,6 +3,7 @@ package mcp
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"resume-mcp/internal/profile"
 	"resume-mcp/internal/resume"
@@ -87,6 +88,12 @@ func prepareJobContextTool(service resume.Service) ToolHandler {
 		if err := json.Unmarshal(raw, &args); err != nil {
 			return errResult(fmt.Errorf("invalid arguments: %w", err))
 		}
+		if strings.TrimSpace(args.JobDescription) == "" {
+			return errResult(fmt.Errorf("job_description is required"))
+		}
+		if len(args.JobDescription) > 2<<20 {
+			return errResult(fmt.Errorf("job_description is too long"))
+		}
 
 		context, err := service.PrepareJobContext(args.JobDescription)
 		if err != nil {
@@ -106,6 +113,14 @@ func saveResumeTool(service resume.Service) ToolHandler {
 		var args saveResumeArgs
 		if err := json.Unmarshal(raw, &args); err != nil {
 			return errResult(fmt.Errorf("invalid arguments: %w", err))
+		}
+		if strings.TrimSpace(args.ResumeContent) == "" {
+			return errResult(fmt.Errorf("content is required"))
+		}
+		if args.FileName != "" {
+			if strings.Contains(args.FileName, "/") || strings.Contains(args.FileName, "\\") || strings.Contains(args.FileName, "..") || strings.HasPrefix(args.FileName, ".") {
+				return errResult(fmt.Errorf("file_name must be a simple file name without paths"))
+			}
 		}
 
 		message, err := service.Save(args.ResumeContent, args.FileName)

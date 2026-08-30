@@ -3,6 +3,7 @@ package resume
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -78,6 +79,14 @@ func TestWriterHelpers(t *testing.T) {
 		assert.Equal(t, "My_Resume_2024", writer.sanitizeFileName("My Resume 2024"))
 		assert.Equal(t, "resume", writer.sanitizeFileName("_resume_"))
 		assert.Equal(t, "go_backend", writer.sanitizeFileName("go/backend?"))
+		assert.Equal(t, "etc_passwd", writer.sanitizeFileName("../../etc/passwd"))
+	})
+
+	t.Run("when file name exceeds the maximum safe length then it is truncated", func(t *testing.T) {
+		writer := NewWriter(t.TempDir(), "https://example.com/downloads/")
+		longName := strings.Repeat("a", maxSanitizedFileNameLength+50)
+
+		assert.Len(t, writer.sanitizeFileName(longName), maxSanitizedFileNameLength)
 	})
 
 	t.Run("when generating a path then a collision creates a unique candidate", func(t *testing.T) {
@@ -125,6 +134,23 @@ func TestSave(t *testing.T) {
 		service := NewService(stubDataSource{}, NewWriter(t.TempDir(), "https://example.com/downloads"))
 
 		_, err := service.Save("   ", "resume")
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "content")
+	})
+
+	t.Run("when file name contains path traversal then Save rejects it", func(t *testing.T) {
+		service := NewService(stubDataSource{}, NewWriter(t.TempDir(), "https://example.com/downloads"))
+
+		_, err := service.Save("# Hello\n", "../../evil")
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "file_name")
+	})
+
+	t.Run("when content exceeds the maximum size then Save returns an error", func(t *testing.T) {
+		service := NewService(stubDataSource{}, NewWriter(t.TempDir(), "https://example.com/downloads"))
+		largeContent := strings.Repeat("A", maxResumeContentSize+1)
+
+		_, err := service.Save(largeContent, "resume")
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "content")
 	})

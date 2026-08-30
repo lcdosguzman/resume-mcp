@@ -10,6 +10,8 @@ type DataSource interface {
 	ReadResumeFormat() ([]byte, error)
 }
 
+const maxResumeContentSize = 2 << 20 // 2 MiB
+
 type Service struct {
 	data   DataSource
 	writer Writer
@@ -22,6 +24,9 @@ func NewService(data DataSource, writer Writer) Service {
 func (s Service) PrepareJobContext(jobDescription string) (string, error) {
 	if strings.TrimSpace(jobDescription) == "" {
 		return "", fmt.Errorf("the 'job_description' field cannot be empty")
+	}
+	if len(jobDescription) > maxResumeContentSize {
+		return "", fmt.Errorf("the 'job_description' field is too long")
 	}
 
 	profile, err := s.data.ReadProfile()
@@ -61,6 +66,9 @@ func (s Service) PrepareJobContext(jobDescription string) (string, error) {
 func (s Service) Save(content, fileName string) (string, error) {
 	if strings.TrimSpace(content) == "" {
 		return "", fmt.Errorf("the 'content' field cannot be empty")
+	}
+	if len(content) > maxResumeContentSize {
+		return "", fmt.Errorf("the 'content' field is too long")
 	}
 	return s.writer.Save(content, fileName)
 }

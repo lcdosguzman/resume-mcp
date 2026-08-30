@@ -15,6 +15,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("invalid configuration: %v", err)
 	}
+	if err := appConfig.Validate(); err != nil {
+		log.Fatalf("invalid runtime configuration: %v", err)
+	}
 
 	profileRepository := profile.NewRepository(appConfig.ProfilePath, appConfig.ResumeFormatPath)
 	resumeWriter := resume.NewWriter(appConfig.OutputDir, appConfig.DownloadBaseURL())

@@ -25,8 +25,14 @@ func tailorResumePrompt(args map[string]string) (GetPromptResult, error) {
 	if jobDescription == "" {
 		return GetPromptResult{}, fmt.Errorf("the 'job_description' argument cannot be empty")
 	}
+	if len(jobDescription) > 2<<20 {
+		return GetPromptResult{}, fmt.Errorf("the 'job_description' argument is too long")
+	}
 
 	fileName := strings.TrimSpace(args["file_name"])
+	if fileName != "" && (strings.Contains(fileName, "/") || strings.Contains(fileName, "\\") || strings.Contains(fileName, "..") || strings.HasPrefix(fileName, ".")) {
+		return GetPromptResult{}, fmt.Errorf("the 'file_name' argument must be a simple file name without paths")
+	}
 	fileInstruction := "Call save_resume without file_name so the server generates one."
 	if fileName != "" {
 		fileInstruction = fmt.Sprintf("Call save_resume with file_name set to %q.", fileName)

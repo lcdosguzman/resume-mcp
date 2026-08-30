@@ -1,6 +1,8 @@
 package config
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -19,6 +21,41 @@ func TestLoad(t *testing.T) {
 		assert.Equal(t, "data/profile.json", cfg.ProfilePath)
 		assert.Equal(t, "data/resume_format.json", cfg.ResumeFormatPath)
 		assert.Equal(t, "output", cfg.OutputDir)
+	})
+
+	t.Run("when runtime paths are valid then Validate succeeds", func(t *testing.T) {
+		tempDir := t.TempDir()
+		profilePath := filepath.Join(tempDir, "profile.json")
+		formatPath := filepath.Join(tempDir, "format.json")
+		outputDir := filepath.Join(tempDir, "output")
+
+		require.NoError(t, os.WriteFile(profilePath, []byte("{}"), 0o600))
+		require.NoError(t, os.WriteFile(formatPath, []byte("{}"), 0o600))
+
+		cfg := Config{
+			Port:             8090,
+			PublicURL:        "http://127.0.0.1:8090",
+			ProfilePath:      profilePath,
+			ResumeFormatPath: formatPath,
+			OutputDir:        outputDir,
+		}
+
+		require.NoError(t, cfg.Validate())
+		assert.DirExists(t, outputDir)
+	})
+
+	t.Run("when runtime paths are invalid then Validate returns an error", func(t *testing.T) {
+		cfg := Config{
+			Port:             8090,
+			PublicURL:        "http://127.0.0.1:8090",
+			ProfilePath:      filepath.Join(t.TempDir(), "missing-profile.json"),
+			ResumeFormatPath: filepath.Join(t.TempDir(), "missing-format.json"),
+			OutputDir:        filepath.Join(t.TempDir(), "output"),
+		}
+
+		err := cfg.Validate()
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "ProfilePath")
 	})
 
 	t.Run("when custom values are set then Load returns configured values", func(t *testing.T) {

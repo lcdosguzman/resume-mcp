@@ -23,9 +23,20 @@ func NewWriter(outputDir, downloadBaseURL string) Writer {
 	}
 }
 
+const maxSanitizedFileNameLength = 80
+
 var safeFileNamePattern = regexp.MustCompile(`[^a-zA-Z0-9_-]+`)
 
 func (w Writer) Save(content, requestedName string) (string, error) {
+	if strings.TrimSpace(content) == "" {
+		return "", fmt.Errorf("the 'content' field cannot be empty")
+	}
+	if len(content) > maxResumeContentSize {
+		return "", fmt.Errorf("the 'content' field is too long")
+	}
+	if strings.Contains(requestedName, "/") || strings.Contains(requestedName, "\\") || strings.Contains(requestedName, "..") || strings.HasPrefix(requestedName, ".") {
+		return "", fmt.Errorf("the 'file_name' field must be a simple file name without paths")
+	}
 	if err := os.MkdirAll(w.outputDir, 0o755); err != nil {
 		return "", fmt.Errorf("could not create output directory: %w", err)
 	}
@@ -47,8 +58,18 @@ func (w Writer) sanitizeFileName(requestedName string) string {
 		return "cv"
 	}
 
+	fileName = strings.ReplaceAll(fileName, "\\", "/")
+	fileName = filepath.Clean(fileName)
+	fileName = strings.Trim(fileName, "/.")
 	fileName = safeFileNamePattern.ReplaceAllString(fileName, "_")
 	fileName = strings.Trim(fileName, "_")
+	if fileName == "" {
+		return "cv"
+	}
+	if len(fileName) > maxSanitizedFileNameLength {
+		fileName = fileName[:maxSanitizedFileNameLength]
+		fileName = strings.TrimRight(fileName, "_")
+	}
 	if fileName == "" {
 		return "cv"
 	}

@@ -53,3 +53,56 @@ func (c Config) Address() string {
 func (c Config) DownloadBaseURL() string {
 	return c.PublicURL + "/downloads/"
 }
+
+func (c Config) Validate() error {
+	if c.Port < 1 || c.Port > 65535 {
+		return fmt.Errorf("invalid Port %d", c.Port)
+	}
+	if c.PublicURL == "" {
+		return fmt.Errorf("invalid PublicURL %q", c.PublicURL)
+	}
+	parsedURL, err := url.Parse(c.PublicURL)
+	if err != nil || parsedURL.Scheme == "" || parsedURL.Host == "" {
+		return fmt.Errorf("invalid PublicURL %q", c.PublicURL)
+	}
+	if strings.TrimSpace(c.ProfilePath) == "" {
+		return fmt.Errorf("invalid ProfilePath %q", c.ProfilePath)
+	}
+	if strings.TrimSpace(c.ResumeFormatPath) == "" {
+		return fmt.Errorf("invalid ResumeFormatPath %q", c.ResumeFormatPath)
+	}
+	if strings.TrimSpace(c.OutputDir) == "" {
+		return fmt.Errorf("invalid OutputDir %q", c.OutputDir)
+	}
+
+	if _, err := os.Stat(c.ProfilePath); err != nil {
+		return fmt.Errorf("invalid ProfilePath %q: %w", c.ProfilePath, err)
+	}
+	if _, err := os.Stat(c.ResumeFormatPath); err != nil {
+		return fmt.Errorf("invalid ResumeFormatPath %q: %w", c.ResumeFormatPath, err)
+	}
+
+	if err := os.MkdirAll(c.OutputDir, 0o755); err != nil {
+		return fmt.Errorf("invalid OutputDir %q: %w", c.OutputDir, err)
+	}
+
+	info, err := os.Stat(c.OutputDir)
+	if err != nil {
+		return fmt.Errorf("invalid OutputDir %q: %w", c.OutputDir, err)
+	}
+	if !info.IsDir() {
+		return fmt.Errorf("invalid OutputDir %q: path is not a directory", c.OutputDir)
+	}
+	return nil
+}
+
+func filepathBase(path string) string {
+	base := path
+	if idx := strings.LastIndex(base, "/"); idx >= 0 {
+		base = base[idx+1:]
+	}
+	if idx := strings.LastIndex(base, "\\"); idx >= 0 {
+		base = base[idx+1:]
+	}
+	return base
+}
