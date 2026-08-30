@@ -63,6 +63,24 @@ func TestPrepareJobContext(t *testing.T) {
 		}
 	})
 
+	t.Run("when the profile is majority Spanish then the default output language is Spanish", func(t *testing.T) {
+		data := stubDataSource{
+			profileData: []byte(`{"professional_summary":"Soy ingeniero de software con más de 10 años de experiencia. Trabajo en backend, microservicios, equipos ágiles y arquitectura escalable.","languages":[{"language":"Español","level":"nativo"},{"language":"Inglés","level":"profesional"}]}`),
+			formatData:  []byte(`{"sections":["summary","experience"]}`),
+		}
+		service := NewService(data, Writer{})
+
+		context, err := service.PrepareJobContext("Buscamos un backend engineer con Go.")
+		require.NoError(t, err)
+		assert.Contains(t, context, "Default language for the profile: Spanish")
+		assert.NotContains(t, context, "English by default")
+	})
+
+	t.Run("when the profile JSON is majority Spanish then the detected profile language is Spanish", func(t *testing.T) {
+		profileData := []byte(`{"professional_summary":"Soy ingeniero de software con más de 10 años de experiencia. Trabajo en backend, microservicios, equipos ágiles y arquitectura escalable.","soft_skills":["Comunicación","Trabajo en equipo","Liderazgo"]}`)
+		assert.Equal(t, "Spanish", predominantProfileLanguage(profileData))
+	})
+
 	t.Run("when reading the data source fails then PrepareJobContext returns the read error", func(t *testing.T) {
 		service := NewService(stubDataSource{profileErr: os.ErrNotExist, formatErr: os.ErrPermission}, Writer{})
 
@@ -125,6 +143,7 @@ func TestWriterHelpers(t *testing.T) {
 		message, err := writer.savedMessage(path)
 		require.NoError(t, err)
 		assert.Contains(t, message, "Resume saved at:")
+		assert.Contains(t, message, "Open: https://example.com/downloads/resume_20240102_030405.000000000.md")
 		assert.Contains(t, message, "Download: https://example.com/downloads/resume_20240102_030405.000000000.md")
 	})
 }

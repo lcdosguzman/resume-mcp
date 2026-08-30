@@ -116,5 +116,11 @@ func (w Writer) savedMessage(path string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("could not resolve saved file path: %w", err)
 	}
-	return fmt.Sprintf("Resume saved at: %s\nDownload: %s", abs, w.downloadBaseURL+url.PathEscape(filepath.Base(path))), nil
+
+	downloadURL := strings.TrimRight(w.downloadBaseURL, "/") + "/" + url.PathEscape(filepath.Base(path))
+	if strings.TrimSpace(w.downloadBaseURL) == "" {
+		downloadURL = "file://" + filepath.ToSlash(abs)
+	}
+
+	return fmt.Sprintf("Resume saved at: %s\nOpen: %s\nDownload: %s", abs, downloadURL, downloadURL), nil
 }

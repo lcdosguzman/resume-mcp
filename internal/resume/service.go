@@ -41,8 +41,9 @@ func (s Service) PrepareJobContext(jobDescription string) (string, error) {
 	var builder strings.Builder
 	builder.WriteString("# Context for generating a tailored resume\n\n")
 	builder.WriteString("## Instructions\n")
-	builder.WriteString("First determine the predominant language of the profile's narrative content. Compare the prose in the summary, descriptions, achievements, education, certifications, and soft skills; do not count only names, company names, technologies, or URLs. Write the entire resume, including section headings and the fit evaluation, in the predominant language: Spanish when Spanish content is the majority, or English when English content is the majority. Then write a Markdown resume tailored to the job description below, using ")
-	builder.WriteString("only factual information from the profile (do not invent experience, ")
+	profileLanguage := predominantProfileLanguage(profile)
+	builder.WriteString(fmt.Sprintf("Default language for the profile: %s. Use this as the default output language unless the user explicitly asks for another language. The resume must be written in the profile's predominant language, not the job description's language. ", profileLanguage))
+	builder.WriteString("Determine the predominant language by comparing the prose in the summary, descriptions, achievements, education, certifications, and soft skills; do not count only names, company names, technologies, or URLs. Then write a Markdown resume tailored to the job description below, using only factual information from the profile (do not invent experience, ")
 	builder.WriteString("degrees, or dates). Prioritize and reorder the experience, achievements, and skills ")
 	builder.WriteString("that are most relevant to this specific position. Follow the structure defined ")
 	builder.WriteString("in 'resume_format'. The final fit evaluation section is mandatory and must include ")
@@ -61,6 +62,16 @@ func (s Service) PrepareJobContext(jobDescription string) (string, error) {
 	builder.WriteString("\n```\n")
 
 	return builder.String(), nil
+}
+
+func predominantProfileLanguage(profileData []byte) string {
+	text := strings.ToLower(string(profileData))
+	spanishCount := strings.Count(text, "español") + strings.Count(text, "spanish") + strings.Count(text, "soy") + strings.Count(text, "ingrese") + strings.Count(text, "trabajo") + strings.Count(text, "desarrollo") + strings.Count(text, "cliente") + strings.Count(text, "equipo") + strings.Count(text, "sistemas") + strings.Count(text, "arquitectura")
+	englishCount := strings.Count(text, "english") + strings.Count(text, "experience") + strings.Count(text, "team") + strings.Count(text, "software") + strings.Count(text, "engineer") + strings.Count(text, "developer") + strings.Count(text, "project") + strings.Count(text, "design") + strings.Count(text, "lead") + strings.Count(text, "data")
+	if spanishCount >= englishCount {
+		return "Spanish"
+	}
+	return "English"
 }
 
 func (s Service) Save(content, fileName string) (string, error) {
