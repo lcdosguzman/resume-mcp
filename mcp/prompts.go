@@ -5,15 +5,19 @@ import (
 	"strings"
 )
 
-func RegisterPrompts(server *Server) {
-	_ = server.RegisterPrompt(Prompt{
+func RegisterPrompts(server *Server) error {
+	if err := server.RegisterPrompt(Prompt{
 		Name:        "tailor_resume",
 		Description: "Creates a tailored resume from a job description using the candidate profile and configured resume format.",
 		Arguments: []PromptArgument{
 			{Name: "job_description", Description: "Full job description (overview, requirements, and responsibilities).", Required: true},
 			{Name: "file_name", Description: "Optional output file name without an extension.", Required: false},
 		},
-	}, tailorResumePrompt)
+	}, tailorResumePrompt); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func tailorResumePrompt(args map[string]string) (GetPromptResult, error) {

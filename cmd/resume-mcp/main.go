@@ -21,8 +21,12 @@ func main() {
 	resumeService := resume.NewService(profileRepository, resumeWriter)
 
 	mcpServer := mcpserver.NewServer("resume-mcp", "0.1.0")
-	mcpserver.RegisterTools(mcpServer, profileRepository, resumeService)
-	mcpserver.RegisterPrompts(mcpServer)
+	if err := mcpserver.RegisterTools(mcpServer, profileRepository, resumeService); err != nil {
+		log.Fatalf("could not register tools: %v", err)
+	}
+	if err := mcpserver.RegisterPrompts(mcpServer); err != nil {
+		log.Fatalf("could not register prompts: %v", err)
+	}
 
 	mux := http.NewServeMux()
 	mux.Handle("/mcp", mcpServer.Handler())

@@ -8,20 +8,24 @@ import (
 	"resume-mcp/internal/resume"
 )
 
-func RegisterTools(server *Server, profileRepository profile.Repository, resumeService resume.Service) {
-	_ = server.RegisterTool(Tool{
+func RegisterTools(server *Server, profileRepository profile.Repository, resumeService resume.Service) error {
+	if err := server.RegisterTool(Tool{
 		Name:        "get_profile",
 		Description: "Returns the user's personal details, experience, education, and skills as JSON. Use this first to review the available information before tailoring a resume.",
 		InputSchema: InputSchema{Type: "object"},
-	}, getProfileTool(profileRepository))
+	}, getProfileTool(profileRepository)); err != nil {
+		return err
+	}
 
-	_ = server.RegisterTool(Tool{
+	if err := server.RegisterTool(Tool{
 		Name:        "get_resume_format",
 		Description: "Returns the structure and format that the generated resume must follow (sections, order, style, and length). Use it together with get_profile.",
 		InputSchema: InputSchema{Type: "object"},
-	}, getResumeFormatTool(profileRepository))
+	}, getResumeFormatTool(profileRepository)); err != nil {
+		return err
+	}
 
-	_ = server.RegisterTool(Tool{
+	if err := server.RegisterTool(Tool{
 		Name:        "prepare_job_context",
 		Description: "Receives a job description and returns instructions for generating a resume tailored to that position, together with the profile and resume format. The model calling this tool must use the result to write the resume in Markdown and then save it with the 'save_resume' tool.",
 		InputSchema: InputSchema{
@@ -31,9 +35,11 @@ func RegisterTools(server *Server, profileRepository profile.Repository, resumeS
 			},
 			Required: []string{"job_description"},
 		},
-	}, prepareJobContextTool(resumeService))
+	}, prepareJobContextTool(resumeService)); err != nil {
+		return err
+	}
 
-	_ = server.RegisterTool(Tool{
+	if err := server.RegisterTool(Tool{
 		Name:        "save_resume",
 		Description: "Saves the tailored resume, already written in Markdown by the model, as an .md file in the server's output/ directory.",
 		InputSchema: InputSchema{
@@ -44,7 +50,11 @@ func RegisterTools(server *Server, profileRepository profile.Repository, resumeS
 			},
 			Required: []string{"content"},
 		},
-	}, saveResumeTool(resumeService))
+	}, saveResumeTool(resumeService)); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func getProfileTool(repository profile.Repository) ToolHandler {

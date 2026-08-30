@@ -8,6 +8,9 @@ import (
 	"strings"
 	"testing"
 
+	"resume-mcp/internal/profile"
+	"resume-mcp/internal/resume"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -72,6 +75,28 @@ func TestHandler(t *testing.T) {
 		require.NoError(t, json.NewDecoder(recorder.Body).Decode(&response))
 		require.NotNil(t, response.Error)
 		assert.Equal(t, CodeInvalidParams, response.Error.Code)
+	})
+}
+
+func TestRegisterToolsAndPromptsReturnErrorsWhenRegistrationFails(t *testing.T) {
+	t.Run("when tools are registered twice then RegisterTools returns the registration error", func(t *testing.T) {
+		server := NewServer("test", "1.0.0")
+		repository := profile.NewRepository("../data/profile.json", "../data/resume_format.json")
+		service := resume.NewService(repository, resume.NewWriter("../output", "http://127.0.0.1:8090/downloads/"))
+
+		require.NoError(t, RegisterTools(server, repository, service))
+		err := RegisterTools(server, repository, service)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "already registered")
+	})
+
+	t.Run("when prompts are registered twice then RegisterPrompts returns the registration error", func(t *testing.T) {
+		server := NewServer("test", "1.0.0")
+
+		require.NoError(t, RegisterPrompts(server))
+		err := RegisterPrompts(server)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "already registered")
 	})
 }
 
